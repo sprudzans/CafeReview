@@ -1,0 +1,7 @@
+{
+  "name": "portal-cafe-review",
+  "keywords": ["node", "nextjs", "heroku"],
+  "scripts": {
+    "postdeploy": "npm run build"
+  }
+}
