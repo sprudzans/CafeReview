@@ -36,12 +36,9 @@ const Navbar = () => {
     const router = useRouter();
 
     const handleLogout = () => {
-        axios
-            .post('/api/user/logout', {}, {withCredentials: true})
-            .then(_ => {
-                dispatch(logoutUser());
-                router.push('/')
-            });
+        axios.post('/api/user/logout', {}, {withCredentials: true});
+        dispatch(logoutUser());
+        router.push('/');
     }
 
     const UserMenu = () => {
