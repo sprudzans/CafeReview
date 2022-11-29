@@ -17,12 +17,15 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import Avatar from "@mui/material/Avatar";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 // icons
 import TableBarIcon from '@mui/icons-material/TableBar';
 
 const Navbar = () => {
     const user = useSelector(state => state.user)
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const [show, setShow] = useState(false);
 
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
@@ -36,6 +39,9 @@ const Navbar = () => {
     const router = useRouter();
 
     const handleLogout = () => {
+        handleCloseUserMenu()
+        setShow(true)
+
         axios
             .post('/api/user/logout', {}, {withCredentials: true})
             .then(_ => {
@@ -99,6 +105,12 @@ const Navbar = () => {
                                 </IconButton>
                             </Tooltip>
                             <UserMenu/>
+                            <Backdrop
+                                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                                open={show}
+                            >
+                                <CircularProgress />
+                            </Backdrop>
                         </Box>
                     )}
 
