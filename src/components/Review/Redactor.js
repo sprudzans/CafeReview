@@ -75,8 +75,10 @@ const ReviewRedactor = ({review = {}, cafe = {}}) => {
                             onInitialize={handleInstance} defaultValue={review.desc && JSON.parse(review.desc) || ""}/>
                 </Box>
                 <Stack direction="row" spacing={2} justifyContent={"end"}>
-                    <Button type="button" onClick={handleDelete} variant="outlined" color="error">Удалить</Button>
-                    <Button type="submit" variant="outlined">Сохранить</Button>
+                    <Button type="button" onClick={handleDelete} variant="outlined" color="error">
+                        {review._id ? "Удалить" : "Отменить" }
+                    </Button>
+                    <Button type="submit" variant="outlined" color={"secondary"}>Сохранить</Button>
                 </Stack>
             </Stack>
 

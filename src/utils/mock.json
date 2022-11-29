@@ -1,8 +1,23 @@
 {
   "userArray": [
-    {"username": "Kuznetsov", "password": "pass1", "email": "kuznets@mail.ru"},
-    {"username": "Ivanov", "password": "pass2", "email": "ivanov@mail.ru"},
-    {"username": "Petrov", "password": "pass3", "email": "petrov@mail.ru"}
+    {
+      "username": "Kuznetsov",
+      "password": "pass1",
+      "email": "kuznets@mail.ru",
+      "avatar": "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e"
+    },
+    {
+      "username": "Ivanov",
+      "password": "pass2",
+      "email": "ivanov@mail.ru",
+      "avatar": "https://images.unsplash.com/photo-1551782450-a2132b4ba21d"
+    },
+    {
+      "username": "Petrov",
+      "password": "pass3",
+      "email": "petrov@mail.ru",
+      "avatar": "https://images.unsplash.com/photo-1522770179533-24471fcdba45"
+    }
   ],
   "cafeArray": [
     {

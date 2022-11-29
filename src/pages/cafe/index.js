@@ -1,11 +1,11 @@
 import {useState} from "react";
 import {useDispatch} from "react-redux";
 // local
-import nextAuth from "../../middlewares/nextAuth";
 import {getCafeArray} from "../../middlewares/dbReq";
 import {loginUser} from "../../utils/user/userSlice";
 import Layout from "../../components/Layout";
 import CafeCard from "../../components/Cafe/Card";
+import auth from "../../middlewares/auth";
 // mui
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -78,8 +78,9 @@ const CafeMain = ({user, cafeArray}) => {
     )
 }
 
-export async function getServerSideProps({req}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps({req, res}) {
+    await auth.run(req, res);
+    const user = req.user || false
     const cafeArray = await getCafeArray()
 
     return { props: {user, cafeArray} }

@@ -2,10 +2,9 @@ import axios from "axios";
 import {useDispatch} from "react-redux";
 import dynamic from "next/dynamic";
 import NextLink from "next/link";
-import {useRouter} from "next/router";
 import {useState} from "react";
 // local
-import nextAuth from "../../middlewares/nextAuth";
+import auth from "../../middlewares/auth";
 import {getCafe} from "../../middlewares/dbReq";
 import {loginUser, updateUser} from "../../utils/user/userSlice";
 import Layout from "../../components/Layout";
@@ -131,8 +130,9 @@ const CafeAbout = ({user, cafe}) => {
     )
 }
 
-export async function getServerSideProps({req, params}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps({req, res, params}) {
+    await auth.run(req, res);
+    const user = req.user || false
     const cafe = await getCafe(params.id)
 
     if (!cafe) return {redirect: {destination: '/404', permanent: false}}

@@ -5,7 +5,7 @@ import {useRouter} from "next/router";
 import {useDispatch} from "react-redux";
 import { useForm } from "react-hook-form";
 // local
-import nextAuth from "../middlewares/nextAuth";
+import auth from "../middlewares/auth";
 import Layout from "../components/Layout";
 import {loginUser} from "../utils/user/userSlice";
 // mui
@@ -101,8 +101,9 @@ const Signup = () => {
     )
 }
 
-export async function getServerSideProps({req}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps({req, res}) {
+    await auth.run(req, res);
+    const user = req.user || false
 
     if (user) {
         return {redirect: {destination: '/user/', permanent: false}}

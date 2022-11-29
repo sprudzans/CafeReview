@@ -32,10 +32,16 @@ const CafeComment = ({cafeID, commentArray}) => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        setText('')
+
+        if (!text.length) return alert('Текст комментария не указан')
+        if (!value) return alert('Рейтинг не указан')
+
         axios
             .post('/api/comment/add', {text, rating: value, cafe: cafeID}, {withCredentials: true})
-            .then(({data}) => setComments([...comments, data.comment]));
+            .then(({data}) => {
+                setComments([...comments, data.comment])
+                setText('')
+            });
     }
 
     const handleClick = (id) => {
@@ -93,7 +99,8 @@ const CafeComment = ({cafeID, commentArray}) => {
                         <Grid item>
                             <Button
                                 type="submit"
-                                variant="outlined">
+                                variant="outlined"
+                                color={"secondary"}>
                                 Отправить
                             </Button>
                         </Grid>

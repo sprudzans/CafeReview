@@ -30,9 +30,15 @@ const CafeRedactor = ({cafe = {}}) => {
     const [open, setOpen] = useState(false);
     const handleClose = () => setOpen(false);
 
-    const {register, handleSubmit} = useForm();
+    const {register, handleSubmit, formState: {errors}} = useForm();
     const onSubmit = async (data) => {
         const savedData = await editorInstance.save();
+
+        if (!savedData.blocks?.length) return alert('Нужно добавить описание')
+
+        try {
+            await axios.get(src, {responseType: 'arraybuffer'})
+        } catch { return alert('Изображение по ссылке не доступно') }
 
         const body = {
             image: src,
@@ -73,29 +79,61 @@ const CafeRedactor = ({cafe = {}}) => {
                         <TextField
                             variant={"standard"}
                             defaultValue={cafe.title || ''}
+                            error={"title" in errors}
+                            helperText={errors.title?.message}
                             label={"Название кафе"}
                             placeholder={"А зори здесь тихие"}
-                            {...register("title")}/>
+                            {...register("title", {
+                                required: {
+                                    value: true,
+                                    message: "Обязательно указать название кафе"
+                                }
+                            })}/>
                         <TextField
                             variant={"standard"}
                             label={"Главное изображение"}
+                            error={"picture" in errors}
+                            helperText={errors.picture?.message}
                             placeholder={"https://site.ru/image.png"}
                             defaultValue={cafe.image || ''}
-                            {...register("picture", { onChange: (e) => {setSrc(e.target.value)} })}/>
+                            {...register("picture", {
+                                required: {
+                                    value: true,
+                                    message: "Обязательно указать ссылку на изображение"
+                                },
+                                onChange: (e) => {setSrc(e.target.value)} })}/>
                         <TextField
                             label="Средний чек"
                             type="number"
+                            error={"cost" in errors}
+                            helperText={errors.cost?.message}
                             defaultValue={cafe.cost || 1000}
+                            placeholder={"1000"}
                             variant={"standard"}
                             inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', step: 100 }}
-                            {...register("cost")}/>
+                            {...register("cost", {
+                                required: {
+                                    value: true,
+                                    message: "Обязательно указать средний чек"
+                                },
+                                max: {
+                                    value: 10000,
+                                    message: "Не больше 10000"
+                                },
+                                min: {
+                                    value: 0,
+                                    message: "Не меньше нуля"
+                                }
+                            })}/>
                         <Box>
                             <Editor placeholder={`Расскажите о кафе`}
                                     onInitialize={handleInstance} defaultValue={cafe.desc ? JSON.parse(cafe.desc) : {}}/>
                         </Box>
                         <Stack direction="row" spacing={2} justifyContent={"end"}>
-                            <Button type="button" onClick={handleDelete} variant="outlined" color="error">Удалить</Button>
-                            <Button type="submit" variant="outlined">Сохранить</Button>
+                            <Button type="button" onClick={handleDelete} variant="outlined" color="error">
+                                {cafe._id ? "Удалить" : "Отменить" }
+                            </Button>
+                            <Button type="submit" variant="outlined" color={"secondary"}>Сохранить</Button>
                         </Stack>
                     </Stack>
                 </Grid>

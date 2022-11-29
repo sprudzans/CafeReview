@@ -1,7 +1,7 @@
 import NextLink from "next/link";
 import {useDispatch} from "react-redux";
 // local
-import nextAuth from "../../middlewares/nextAuth";
+import auth from "../../middlewares/auth";
 import {getCafeArray, getReviewArray} from "../../middlewares/dbReq";
 import {loginUser} from "../../utils/user/userSlice";
 import CafeCard from "../../components/Cafe/Card";
@@ -37,7 +37,7 @@ const UserMain = ({user, cafeArray, reviewArray}) => {
             </List>
             <Typography textAlign={"end"}>
                 <NextLink href="/user/setting" passHref>
-                    <Button variant={"contained"}>Изменить профиль</Button>
+                    <Button variant={"contained"} color={"secondary"}>Изменить профиль</Button>
                 </NextLink>
             </Typography>
         </Box>
@@ -82,7 +82,7 @@ const UserMain = ({user, cafeArray, reviewArray}) => {
                 <Grid item xs={12}>
                     <Typography textAlign={"end"}>
                         <NextLink href={'/cafe/create'} passHref>
-                            <Button variant={"contained"}>Добавить кафе</Button>
+                            <Button variant={"contained"} color={"secondary"}>Добавить кафе</Button>
                         </NextLink>
                     </Typography>
                 </Grid>
@@ -101,8 +101,9 @@ const UserMain = ({user, cafeArray, reviewArray}) => {
     )
 }
 
-export async function getServerSideProps({req}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps({req, res}) {
+    await auth.run(req, res);
+    const user = req.user || false
 
     if (!user) return {redirect: {destination: '/', permanent: false}};
 

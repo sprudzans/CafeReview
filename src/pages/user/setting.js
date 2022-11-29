@@ -3,7 +3,7 @@ import {useForm} from "react-hook-form";
 import axios from "axios";
 import {useDispatch} from "react-redux";
 // local
-import nextAuth from "../../middlewares/nextAuth";
+import auth from "../../middlewares/auth";
 import {loginUser, updateUser} from "../../utils/user/userSlice";
 import Layout from "../../components/Layout";
 // mui
@@ -86,7 +86,7 @@ const UserSetting = ({user}) => {
         status: 'info'
     })
 
-    const {register, handleSubmit} = useForm();
+    const {register, handleSubmit, formState: {errors}} = useForm();
     const onSubmit = data => {
 
         axios
@@ -125,6 +125,7 @@ const UserSetting = ({user}) => {
                         <Stack spacing={2}>
                             <Button variant="contained"
                                     component="label"
+                                    color={"secondary"}
                                     onClick={handleClick}>
                                 Изменить аватар
                             </Button>
@@ -149,15 +150,30 @@ const UserSetting = ({user}) => {
                             <TextField
                                 fullWidth
                                 label="Имя пользователя"
+                                error={"username" in errors}
+                                helperText={errors.username?.message}
                                 defaultValue={user.username}
-                                {...register("username", {required: true})}/>
+                                {...register("username", {
+                                    required: {
+                                        value: true,
+                                        message: "Обязательно указать username"
+                                    }
+                                })}/>
                             <TextField
                                 fullWidth
+                                error={"email" in errors}
+                                helperText={errors.email?.message}
                                 label="Электронная почта"
                                 defaultValue={user.email}
-                                {...register("email", {required: true})}/>
+                                {...register("email", {
+                                    required: {
+                                        value: true,
+                                        message: "Обязательно указать email"
+                                    }
+                                })}/>
                             <Button
                                 type="submit"
+                                color={"secondary"}
                                 variant="outlined">
                                 Обновить
                             </Button>
@@ -187,8 +203,9 @@ const UserSetting = ({user}) => {
     )
 }
 
-export async function getServerSideProps({req}) {
-    const user = await nextAuth(req);
+export async function getServerSideProps({req, res}) {
+    await auth.run(req, res);
+    const user = req.user || false;
     if (!user) return {redirect : {destination: '/', permanent: false}};
 
     return {props: {user}};

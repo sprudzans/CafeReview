@@ -1,10 +1,10 @@
 import {useDispatch} from "react-redux";
 // local
-import nextAuth from "../../../middlewares/nextAuth";
 import {loginUser} from "../../../utils/user/userSlice";
 import {getReview} from "../../../middlewares/dbReq";
 import Layout from "../../../components/Layout";
 import ReviewRedactor from "../../../components/Review/Redactor";
+import auth from "../../../middlewares/auth";
 import CafeCard from "../../../components/Cafe/Card";
 // mui
 import Grid from "@mui/material/Grid";
@@ -31,8 +31,9 @@ const ReviewUpdate = ({user, review}) => {
     )
 }
 
-export async function getServerSideProps({req, params}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps({req, res, params}) {
+    await auth.run(req, res);
+    const user = req.user || false
     const review = await getReview(params.id)
 
     return {props: {user, review}}

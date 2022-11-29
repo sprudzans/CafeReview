@@ -5,8 +5,8 @@ const userSchema = new Schema({
     avatar: {type: String, default: ''},
     username: {type: String, required: true, unique: true},
     password: {type: String, required: true, unique: true},
+    email: {type: String, required: true, unique: true},
     salt: {type: String},
-    email: {type: String, required: true},
     favorite: [String]
 }, {
     timestamps: true

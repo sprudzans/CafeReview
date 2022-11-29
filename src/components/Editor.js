@@ -42,7 +42,7 @@ const Editor = (props) => (
         
             .ce-toolbar__actions .ce-toolbar__plus,
             .ce-toolbar__actions .ce-toolbar__settings-btn {
-                color: white;
+                color: #19857b;
             }
             
             .cdx-notify {

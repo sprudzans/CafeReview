@@ -38,7 +38,7 @@ const CafeReview = ({cafeID, reviewArray}) => {
             <CafeReviewList/>
             {user.auth && (<Typography textAlign={"end"} sx={{my: 2}}>
                 <NextLink href={'/review/create/?cafe=' + cafeID} passHref>
-                    <Link>Добавить отзыв</Link>
+                    <Link underline="none" color={"secondary"}>Добавить отзыв</Link>
                 </NextLink>
             </Typography>)}
         </>

@@ -2,9 +2,9 @@ import {useDispatch} from "react-redux";
 // local
 import Layout from "../../components/Layout";
 import {loginUser} from "../../utils/user/userSlice";
-import nextAuth from "../../middlewares/nextAuth";
 import {getReviewArray} from "../../middlewares/dbReq";
 import ReviewCard from "../../components/Review/Card";
+import auth from "../../middlewares/auth";
 // mui
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -29,8 +29,9 @@ const Review = ({user, reviewArray}) => {
     )
 }
 
-export async function getServerSideProps({req}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps({req, res}) {
+    await auth.run(req, res);
+    const user = req.user || false
 
     const reviewArray = await getReviewArray()
 

@@ -1,7 +1,7 @@
 import {useDispatch} from "react-redux";
 // local
+import auth from "../../middlewares/auth";
 import Layout from "../../components/Layout";
-import nextAuth from "../../middlewares/nextAuth";
 import {getCafe, getCafeArray} from "../../middlewares/dbReq";
 import CafeCard from "../../components/Cafe/Card";
 import {loginUser} from "../../utils/user/userSlice";
@@ -34,10 +34,10 @@ const ReviewCreate = ({user, cafe, cafeArray}) => {
     return (
         <Layout>
             <Grid container spacing={2}>
-                <Grid item xs={8}>
+                <Grid item xs={12} md={8}>
                     <ReviewRedactor cafe={cafe}/>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12} md={4}>
                     <CafeCard cafe={cafe}/>
                 </Grid>
             </Grid>
@@ -45,8 +45,9 @@ const ReviewCreate = ({user, cafe, cafeArray}) => {
     )
 }
 
-export async function getServerSideProps ({req, query}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps ({req, res, query}) {
+    await auth.run(req, res);
+    const user = req.user || false
     if (!user) return {redirect : {destination: '/', permanent: false}}
 
     const cafe = query.cafe ? await getCafe(query.cafe) : false

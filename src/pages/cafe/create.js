@@ -1,6 +1,6 @@
 import {useDispatch} from "react-redux";
 // local
-import nextAuth from "../../middlewares/nextAuth";
+import auth from "../../middlewares/auth";
 import {loginUser} from "../../utils/user/userSlice";
 import Layout from "../../components/Layout";
 import CafeRedactor from "../../components/Cafe/Redactor";
@@ -23,8 +23,9 @@ const CafeCreate = ({user}) => {
 }
 
 
-export async function getServerSideProps ({req}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps ({req, res}) {
+    await auth.run(req, res);
+    const user = req.user || false
 
     return user
         ? {props: {user}}

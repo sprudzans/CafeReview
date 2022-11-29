@@ -1,9 +1,9 @@
 import NextLink from "next/link";
 import {useDispatch} from "react-redux";
 // local
-import nextAuth from "../../middlewares/nextAuth";
-import {loginUser} from "../../utils/user/userSlice";
+import auth from "../../middlewares/auth";
 import {getBookArray} from "../../middlewares/dbReq";
+import {loginUser} from "../../utils/user/userSlice";
 import Layout from "../../components/Layout";
 // mui
 import TableContainer from "@mui/material/TableContainer";
@@ -15,6 +15,7 @@ import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+
 
 const UserBook = ({user, history}) => {
     const dispatch = useDispatch()
@@ -40,7 +41,7 @@ const UserBook = ({user, history}) => {
                                 >
                                     <TableCell component="th" scope="row">
                                         <NextLink passHref href={'/cafe/' + row.cafe._id}>
-                                            <Link underline="none">
+                                            <Link underline="none" color={"secondary"}>
                                                 {row.cafe.title}
                                             </Link>
                                         </NextLink>
@@ -57,8 +58,9 @@ const UserBook = ({user, history}) => {
     )
 }
 
-export async function getServerSideProps({req}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps({req, res}) {
+    await auth.run(req, res);
+    const user = req.user || false
 
     if (!user) return {redirect: {destination: '/', permanent: false}}
 

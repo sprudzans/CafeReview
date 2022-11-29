@@ -71,6 +71,8 @@ export async function getReview (id) {
 }
 
 export async function getCommentArray(filter = {}) {
+    await dbConnect()
+
     const commentArray = await Comment.find(filter)
         .populate('user', ['avatar', 'username'])
         .lean()

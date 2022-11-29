@@ -6,8 +6,8 @@ import axios from "axios";
 import NextLink from "next/link";
 // local
 import Layout from "../components/Layout";
-import nextAuth from "../middlewares/nextAuth";
 import {loginUser} from "../utils/user/userSlice";
+import auth from "../middlewares/auth";
 // mui
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
@@ -96,8 +96,9 @@ const Login = () => {
     )
 }
 
-export async function getServerSideProps({req}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps({req, res}) {
+    await auth.run(req, res);
+    const user = req.user || false
     if (user) return {redirect: {destination: '/user/', permanent: false}}
 
     return { props: {} }

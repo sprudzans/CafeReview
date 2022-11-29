@@ -19,7 +19,6 @@ import IconButton from "@mui/material/IconButton";
 import Avatar from "@mui/material/Avatar";
 // icons
 import TableBarIcon from '@mui/icons-material/TableBar';
-import Link from "@mui/material/Link";
 
 const Navbar = () => {
     const user = useSelector(state => state.user)

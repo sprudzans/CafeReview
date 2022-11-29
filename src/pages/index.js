@@ -1,7 +1,7 @@
 import NextLink from "next/link";
 import {useDispatch} from "react-redux";
 // local
-import nextAuth from "../middlewares/nextAuth";
+import auth from "../middlewares/auth";
 import Layout from "../components/Layout";
 import CafeCard from "../components/Cafe/Card";
 import ReviewCard from "../components/Review/Card";
@@ -37,7 +37,7 @@ const Home = ({user, cafeArray, reviewArray}) => {
                 <Grid item xs={12}>
                     <Typography textAlign={"end"}>
                         <NextLink href="/review" passHref>
-                            <Link underline="none">Весь список отзывов</Link>
+                            <Link underline="none" color={"secondary"}>Весь список отзывов</Link>
                         </NextLink>
                     </Typography>
                 </Grid>
@@ -56,7 +56,7 @@ const Home = ({user, cafeArray, reviewArray}) => {
                 <Grid item xs={12}>
                     <Typography textAlign={"end"}>
                         <NextLink href="/cafe" passHref>
-                            <Link underline="none">Весь список кафе</Link>
+                            <Link underline="none" color={"secondary"}>Весь список кафе</Link>
                         </NextLink>
                     </Typography>
                 </Grid>
@@ -69,7 +69,7 @@ const Home = ({user, cafeArray, reviewArray}) => {
             <Stack spacing={2} alignItems={'center'}>
                 <Typography variant={"h4"} component={"h1"}>Кажется вы впервые запустили приложение</Typography>
                 <Typography>Возможно вы захотите установить демо-данные</Typography>
-                <Button onClick={handleInstall}>Install</Button>
+                <Button onClick={handleInstall} color={"secondary"}>Установить</Button>
             </Stack>
         </Layout>
     )
@@ -87,8 +87,9 @@ const Home = ({user, cafeArray, reviewArray}) => {
     )
 }
 
-export async function getServerSideProps({req}) {
-    const user = await nextAuth(req)
+export async function getServerSideProps({req, res}) {
+    await auth.run(req, res);
+    const user = req.user || false
     const cafeArray = await getCafeArray()
     const reviewArray = await getReviewArray()
 
