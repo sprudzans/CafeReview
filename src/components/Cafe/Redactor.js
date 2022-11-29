@@ -9,7 +9,6 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Input from "@mui/material/Input";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -57,17 +56,6 @@ const CafeRedactor = ({cafe = {}}) => {
             })
     }
 
-    const previewImage = ({target}) => {
-        if (target.files && target.files[0]) {
-            const formData = new FormData()
-            formData.append("image", target.files[0])
-
-            axios
-                .post(process.env.NEXT_PUBLIC_UPLOAD_LINK, formData, {headers: {'content-type': 'multipart/form-data'}})
-                .then( ({data}) => setSrc(process.env.NEXT_PUBLIC_UPLOAD_LINK + data.file) )
-        }
-    }
-
     const handleDelete = () => {
         axios
             .post('/api/cafe/delete', {id: cafe._id}, {withCredentials: true})
@@ -86,7 +74,14 @@ const CafeRedactor = ({cafe = {}}) => {
                             variant={"standard"}
                             defaultValue={cafe.title || ''}
                             label={"Название кафе"}
+                            placeholder={"А зори здесь тихие"}
                             {...register("title")}/>
+                        <TextField
+                            variant={"standard"}
+                            label={"Главное изображение"}
+                            placeholder={"https://site.ru/image.png"}
+                            defaultValue={cafe.image || ''}
+                            {...register("picture", { onChange: (e) => {setSrc(e.target.value)} })}/>
                         <TextField
                             label="Средний чек"
                             type="number"
@@ -104,23 +99,10 @@ const CafeRedactor = ({cafe = {}}) => {
                         </Stack>
                     </Stack>
                 </Grid>
-                <Grid item xs={12} sm={8} md={4}>
-                    <Stack spacing={2} alignItems={"start"}>
-                        <Box sx={{position: "relative", maxWidth: "100%", height: 220}}>
-                            {src && <img src={src} alt="main image of cafe"/>}
-                        </Box>
-                        <Button
-                            variant="outlined"
-                            component="label">
-                            Выбрать главное изображение
-                            <Input
-                                type="file"
-                                inputProps={{accept: "image/png, image/jpeg"}}
-                                sx={{display: "none"}}
-                                onInput={previewImage}
-                                {...register("picture")}/>
-                        </Button>
-                    </Stack>
+                <Grid item xs={12} md={4}>
+                    <Box>
+                        <img src={src} alt={cafe.title || ''}/>
+                    </Box>
                 </Grid>
             </Grid>
             <Backdrop

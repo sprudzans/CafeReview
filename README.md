@@ -11,8 +11,7 @@
 ## Libs
 
 Application uses a number of open source projects to work properly:
-
-- [Express & Multer] - object storage 
+ 
 - [NextJS] - react framework
 - [Mongoose] - ORM 
 - [Axios] - all requests in app 
