@@ -10,7 +10,6 @@ import Layout from "../components/Layout";
 import {loginUser} from "../utils/user/userSlice";
 // mui
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -22,28 +21,34 @@ import Snackbar from "@mui/material/Snackbar";
 // icons
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import CloseIcon from "@mui/icons-material/Close";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const Signup = () => {
     const [open, setOpen] = useState(false)
     const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch()
     const router = useRouter()
 
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, formState: {errors} } = useForm();
 
-    const onSubmit = data => axios
-        .post('/api/user/signup', data, { withCredentials: true })
-        .then(({data}) => {
-            if (data.message) {
-                setMessage(data.message)
-                setOpen(true)
-                return
-            }
+    const onSubmit = data => {
+        setLoading(true);
+        axios
+            .post('/api/user/signup', data, {withCredentials: true})
+            .then(({data}) => {
+                if (data.message) {
+                    setMessage(data.message);
+                    setOpen(true);
+                    setLoading(false);
+                    return
+                }
 
-            dispatch(loginUser(data.user))
-            router.push('/')
-        })
+                dispatch(loginUser(data.user))
+                router.push('/')
+            })
+    }
 
     return (
         <Layout>
@@ -58,19 +63,42 @@ const Signup = () => {
                     <Stack spacing={2}>
                         <TextField
                             label="Имя пользователя"
-                            {...register("username", { required: true })}/>
+                            error={"username" in errors}
+                            helperText={errors.username?.message}
+                            {...register("username", {
+                                required: {
+                                    value: true,
+                                    message: "Обязательно укажите никнейм"
+                                }
+                            })}/>
                         <TextField
                             label="Электронная почта"
-                            {...register("email", { required: true })}/>
+                            error={"email" in errors}
+                            helperText={errors.email?.message}
+                            {...register("email", {
+                                required: {
+                                    value: true,
+                                    message: "Обязательно укажите почту"
+                                }
+                            })}/>
                         <TextField
                             label="Пароль"
+                            error={"password" in errors}
+                            helperText={errors.password?.message}
                             type="password"
-                            {...register("password", { required: true })}/>
-                        <Button
-                            type="submit"
+                            {...register("password", {
+                                required: {
+                                    value: true,
+                                    message: "Обязательно укажите пароль"
+                                }
+                            })}/>
+                        <LoadingButton
+                            type={"submit"}
+                            loading={loading}
+                            loadingIndicator="Загрузка…"
                             variant="contained">
                             Зарегистрироваться
-                        </Button>
+                        </LoadingButton>
                     </Stack>
                 </form>
                 <Typography textAlign="end" sx={{my:2}}>

@@ -13,12 +13,12 @@ import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import IconButton from "@mui/material/IconButton";
+import LoadingButton from '@mui/lab/LoadingButton';
 // icons
 import CloseIcon from '@mui/icons-material/Close';
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -26,22 +26,27 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 const Login = () => {
     const [message, setMessage] = useState('')
     const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false);
 
     const router = useRouter()
     const dispatch = useDispatch()
 
-    const { register, handleSubmit } = useForm();
-    const onSubmit = data => axios
-            .post('/api/user/login', data, { withCredentials: true })
+    const { register, handleSubmit, formState: {errors} } = useForm();
+    const onSubmit = data => {
+        setLoading(true);
+        axios
+            .post('/api/user/login', data, {withCredentials: true})
             .then(({data}) => {
                 if (data.message) {
-                    setMessage(data.message)
-                    setOpen(true)
+                    setMessage(data.message);
+                    setOpen(true);
+                    setLoading(false);
                     return
                 }
                 dispatch(loginUser(data))
                 router.push('/')
             })
+    }
 
     return (
         <Layout>
@@ -56,16 +61,32 @@ const Login = () => {
                     <Stack spacing={2}>
                         <TextField
                             label="Имя пользователя"
-                            {...register("username", { required: true })}/>
+                            error={"username" in errors}
+                            helperText={errors.username?.message}
+                            {...register("username", {
+                                required: {
+                                    value: true,
+                                    message: "Нужно указать никнейм"
+                                }
+                            })}/>
                         <TextField
                             label="Пароль"
+                            error={"password" in errors}
+                            helperText={errors.password?.message}
                             type="password"
-                            {...register("password", { required: true })}/>
-                        <Button
-                            type="submit"
+                            {...register("password", {
+                                required: {
+                                    value: true,
+                                    message: "Нужно указать пароль"
+                                }
+                            })}/>
+                        <LoadingButton
+                            type={"submit"}
+                            loading={loading}
+                            loadingIndicator="Загрузка…"
                             variant="contained">
                             Войти
-                        </Button>
+                        </LoadingButton>
                     </Stack>
                 </form>
                 <Typography textAlign="end" sx={{my:2}}>
